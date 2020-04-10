@@ -35,6 +35,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     {
         // Initialize size of map
         map = new int[width, height];
+        Queue<Cell> floors = new Queue<Cell>();
 
         // Randomly disperse walls onto map
         for (int x = 0; x < map.GetUpperBound(0); x++)
@@ -44,6 +45,8 @@ public class CellularAutomataGenerator : MonoBehaviour
                 // 50-50 chance of cell becoming a wall
                 if (Random.Range(0, 100) < initialWallPlacementProbability)
                     map[x, y] = 1;
+                else
+                    floors.Enqueue(new Cell(x, y, 0));
             }
         }
 
@@ -60,6 +63,17 @@ public class CellularAutomataGenerator : MonoBehaviour
                 }
             }
             map = newMap;
+        }
+
+        // Quality Check
+        // Connect cave
+        while (floors.Count > 0)
+        {
+            Cell current = floors.Dequeue();
+            if (current.visited == false)
+            {
+                Fill(current);
+            }
         }
 
         // Placement of everything
@@ -93,5 +107,10 @@ public class CellularAutomataGenerator : MonoBehaviour
         return SafeMapValue(map, x - 1, y) + SafeMapValue(map, x - 1, y + 1) + SafeMapValue(map, x, y + 1) + SafeMapValue(map, x + 1, y + 1)
             + SafeMapValue(map, x + 1, y) + SafeMapValue(map, x + 1, y - 1) + SafeMapValue(map, x, y - 1) + SafeMapValue(map, x - 1, y - 1)
             + SafeMapValue(map, x, y);
+    }
+
+    private void Fill(Cell start)
+    {
+        start.visited = true;
     }
 }
