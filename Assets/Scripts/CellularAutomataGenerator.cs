@@ -13,33 +13,6 @@ public class CellularAutomataGenerator : MonoBehaviour
     public GameObject ground;
 
     private Cell[,] map;
-    private List<Room> rooms = new List<Room>();
-
-    class Cell
-    {
-        public bool visited;
-        public int value;
-        public int x;
-        public int y;
-
-        public Cell(int _x, int _y, int val)
-        {
-            value = val;
-            x = _x;
-            y = _y;
-            visited = false;
-        }
-    }
-
-    class Room
-    {
-        public List<Cell> edgeCells;
-
-        public Room()
-        {
-            edgeCells = new List<Cell>();
-        }
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -105,12 +78,12 @@ public class CellularAutomataGenerator : MonoBehaviour
             {
                 Room newRoom = new Room();
                 CreateRoom(current, newRoom);
-                rooms.Add(newRoom);
+                Room.rooms.Add(newRoom);
                 Debug.Log(newRoom.edgeCells.Count);
             }
         }
 
-        Debug.Log("Rooms: " + rooms.Count);
+        Debug.Log("Rooms: " + Room.rooms.Count);
 
         // Placement of everything
         for (int x = 0; x <= map.GetUpperBound(0); x++)
