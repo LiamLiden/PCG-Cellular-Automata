@@ -12,7 +12,8 @@ public class CellularAutomataGenerator : MonoBehaviour
     public GameObject wall;
     public GameObject ground;
 
-    private int[,] map;
+    private Cell[,] map;
+    private List<Room> rooms = new List<Room>();
 
     class Cell
     {
@@ -30,40 +31,70 @@ public class CellularAutomataGenerator : MonoBehaviour
         }
     }
 
+    class Room
+    {
+        public List<Cell> edgeCells;
+
+        public Room()
+        {
+            edgeCells = new List<Cell>();
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         // Initialize size of map
-        map = new int[width, height];
+        map = new Cell[width, height];
         Queue<Cell> floors = new Queue<Cell>();
 
         // Randomly disperse walls onto map
-        for (int x = 0; x < map.GetUpperBound(0); x++)
+        for (int x = 0; x <= map.GetUpperBound(0); x++)
         {
-            for (int y = 0; y < map.GetUpperBound(1); y++)
+            for (int y = 0; y <= map.GetUpperBound(1); y++)
             {
                 // 50-50 chance of cell becoming a wall
                 if (Random.Range(0, 100) < initialWallPlacementProbability)
-                    map[x, y] = 1;
+                    map[x, y] = new Cell(x, y, 1);
                 else
-                    floors.Enqueue(new Cell(x, y, 0));
+                    map[x, y] = new Cell(x, y, 0);
             }
         }
 
         // Run algorithm for input iterations
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations - 1; i++)
         {
-            int[,] newMap = new int[width, height];
-            for (int x = 0; x < map.GetUpperBound(0); x++)
+            Cell[,] newMap = new Cell[width, height];
+            for (int x = 0; x <= map.GetUpperBound(0); x++)
             {
-                for (int y = 0; y < map.GetUpperBound(1); y++)
+                for (int y = 0; y <= map.GetUpperBound(1); y++)
                 {
                     if (MooresNeighborhood(map, x, y) >= wallThreshold)
-                        newMap[x, y] = 1;
+                        newMap[x, y] = new Cell(x, y, 1);
+                    else
+                        newMap[x, y] = new Cell(x, y, 0);
                 }
             }
             map = newMap;
         }
+
+        // Final iteration we add all floors to queue
+        Cell[,] finalMap = new Cell[width, height];
+        for (int x = 0; x <= map.GetUpperBound(0); x++)
+        {
+            for (int y = 0; y <= map.GetUpperBound(1); y++)
+            {
+                if (MooresNeighborhood(map, x, y) >= wallThreshold)
+                    finalMap[x, y] = new Cell(x, y, 1);
+                else
+                {
+                    finalMap[x, y] = new Cell(x, y, 0);
+                    floors.Enqueue(finalMap[x, y]);
+                }
+                    
+            }
+        }
+        map = finalMap;
 
         // Quality Check
         // Connect cave
@@ -72,20 +103,25 @@ public class CellularAutomataGenerator : MonoBehaviour
             Cell current = floors.Dequeue();
             if (current.visited == false)
             {
-                Fill(current);
+                Room newRoom = new Room();
+                CreateRoom(current, newRoom);
+                rooms.Add(newRoom);
+                Debug.Log(newRoom.edgeCells.Count);
             }
         }
 
+        Debug.Log("Rooms: " + rooms.Count);
+
         // Placement of everything
-        for (int x = 0; x < map.GetUpperBound(0); x++)
+        for (int x = 0; x <= map.GetUpperBound(0); x++)
         {
-            for (int y = 0; y < map.GetUpperBound(1); y++)
+            for (int y = 0; y <= map.GetUpperBound(1); y++)
             {
-                if (map[x, y] == 1)
+                if (map[x, y].value == 1)
                 {
                     Instantiate(wall, new Vector3(x, y, 0), Quaternion.identity);
                 }
-                else if (map[x, y] == 0)
+                else if (map[x, y].value == 0)
                 {
                     Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity);
                 }
@@ -94,23 +130,48 @@ public class CellularAutomataGenerator : MonoBehaviour
     }
 
     // Returns 1 if map[x, y] are out of bounds of map, else returns map[x, y]
-    private int SafeMapValue(int[,] map, int x, int y)
+    private int SafeMapValue(Cell[,] map, int x, int y)
     {
-        if (x < 0 || x >= map.GetUpperBound(0) || y < 0 || y >= map.GetUpperBound(1))
+        if (x < 0 || x > map.GetUpperBound(0) || y < 0 || y > map.GetUpperBound(1))
             return 1;
         else
-            return map[x, y];
+            return map[x, y].value;
     }
 
-    private int MooresNeighborhood(int[,] map, int x, int y)
+    // Returns value of map[x, y] Moores Neighborhood
+    private int MooresNeighborhood(Cell[,] map, int x, int y)
     {
         return SafeMapValue(map, x - 1, y) + SafeMapValue(map, x - 1, y + 1) + SafeMapValue(map, x, y + 1) + SafeMapValue(map, x + 1, y + 1)
             + SafeMapValue(map, x + 1, y) + SafeMapValue(map, x + 1, y - 1) + SafeMapValue(map, x, y - 1) + SafeMapValue(map, x - 1, y - 1)
             + SafeMapValue(map, x, y);
     }
 
-    private void Fill(Cell start)
+    // Recursive function to create a room. Uses BFS to visit all cells in a room and adds any cells adjacent to a wall to edgeCells.
+    private void CreateRoom(Cell start, Room room)
     {
+        // Base case
+        if (start.value == 1 || start.visited == true)
+            return;
+
         start.visited = true;
+        if (MooresNeighborhood(map, start.x, start.y) > 0)
+        {
+            room.edgeCells.Add(start);
+        }
+
+        // Call CreateRoom on all adjacent cells
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                int tempX = start.x + i;
+                int tempY = start.y + j;
+                if (tempX >= 0 && tempX <= map.GetUpperBound(0) && tempY >= 0 && tempY <= map.GetUpperBound(1))
+                    CreateRoom(map[tempX, tempY], room);
+            }
+        }
+
     }
+
+
 }
