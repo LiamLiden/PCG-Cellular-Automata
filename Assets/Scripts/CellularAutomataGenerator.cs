@@ -70,7 +70,7 @@ public class CellularAutomataGenerator : MonoBehaviour
         map = finalMap;
 
         // Quality Check
-        // Connect cave
+        // Room Creation
         while (floors.Count > 0)
         {
             Cell current = floors.Dequeue();
@@ -79,11 +79,28 @@ public class CellularAutomataGenerator : MonoBehaviour
                 Room newRoom = new Room();
                 CreateRoom(current, newRoom);
                 Room.rooms.Add(newRoom);
-                Debug.Log(newRoom.edgeCells.Count);
+                //Debug.Log(newRoom.edgeCells.Count);
+            }
+        }
+        Debug.Log("Rooms: " + Room.rooms.Count);
+
+        foreach (Room curRoom in Room.rooms)
+        {
+            if (curRoom.connectedRooms.Count == 0)
+            {
+                CellPair cellsToConnect = curRoom.FindNearestUnconnected();
+                Debug.Log(cellsToConnect.startCell.x + " " + cellsToConnect.startCell.y);
+                Debug.Log(cellsToConnect.finalCell.x + " " + cellsToConnect.finalCell.y);
+
+                List<Cell> path = AStar.Search(map, cellsToConnect.startCell, cellsToConnect.finalCell);
+                Debug.Log("Path Length: " + path.Count);
+                foreach (Cell cell in path)
+                {
+                    cell.value = 0;
+                }
             }
         }
 
-        Debug.Log("Rooms: " + Room.rooms.Count);
 
         // Placement of everything
         for (int x = 0; x <= map.GetUpperBound(0); x++)
@@ -143,8 +160,5 @@ public class CellularAutomataGenerator : MonoBehaviour
                     CreateRoom(map[tempX, tempY], room);
             }
         }
-
     }
-
-
 }

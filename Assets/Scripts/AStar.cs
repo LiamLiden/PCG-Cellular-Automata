@@ -11,12 +11,10 @@ public class AStar
         SortedSet<Cell> sortedCells = new SortedSet<Cell>();
         HashSet<Cell> visited = new HashSet<Cell>();
 
-        Cell prevCell = null;
         Cell currentCell = start;
 
         while (currentCell != target)
         {
-            currentCell.prev = prevCell;
             // Add adjacent cells to PriorityQueue
             for (int i = -1; i <= 1; i++)
             {
@@ -27,6 +25,7 @@ public class AStar
                     if (tempX >= 0 && tempX <= map.GetUpperBound(0) && tempY >= 0 && tempY <= map.GetUpperBound(1) && !visited.Contains(map[tempX, tempY]))
                     {
                         map[tempX, tempY].SetDistance(target);
+                        map[tempX, tempY].prev = currentCell;
                         sortedCells.Add(map[tempX, tempY]);
                         visited.Add(map[tempX, tempY]);
                     }   
@@ -41,6 +40,7 @@ public class AStar
 
         while (currentCell != null)
         {
+            Debug.Log("PathCell: " + currentCell.x + " " + currentCell.y);
             path.Add(currentCell);
             currentCell = currentCell.prev;
         }

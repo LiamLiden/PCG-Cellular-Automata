@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class Room
 {
-    public class CellPair
-    {
-        public Cell startCell;
-        public Cell finalCell;
-
-        public CellPair(Cell sCell, Cell fCell)
-        {
-            startCell = sCell;
-            finalCell = fCell;
-        }
-    }
-
     public static List<Room> rooms = new List<Room>();
 
     public List<Cell> edgeCells;
@@ -35,7 +23,7 @@ public class Room
 
         foreach (Room tarRoom in rooms)
         {
-            if (connectedRooms.Contains(tarRoom))
+            if (connectedRooms.Contains(tarRoom) || tarRoom == this)
                 continue;
 
             foreach (Cell curCell in edgeCells)

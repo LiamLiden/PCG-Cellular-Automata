@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cell : IComparer<Cell>
+public class Cell : IComparable<Cell>
 {
     public bool visited;
     public int value;
@@ -19,11 +20,11 @@ public class Cell : IComparer<Cell>
         visited = false;
     }
 
-    public int Compare(Cell x, Cell y)
+    public int CompareTo(Cell other)
     {
-        if (x.distance > y.distance)
+        if (distance > other.distance)
             return 1;
-        else if (x.distance < y.distance)
+        else if (distance < other.distance)
             return -1;
         else
             return 0;
