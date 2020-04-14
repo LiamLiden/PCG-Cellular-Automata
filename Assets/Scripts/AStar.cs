@@ -38,9 +38,8 @@ public class AStar
         // Now that we've reached the target, iterate backwards to find optimal path
         List<Cell> path = new List<Cell>();
 
-        while (currentCell != null)
+        while (currentCell != start)
         {
-            Debug.Log("PathCell: " + currentCell.x + " " + currentCell.y);
             path.Add(currentCell);
             currentCell = currentCell.prev;
         }
