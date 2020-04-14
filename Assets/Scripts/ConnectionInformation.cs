@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellPair
+public class ConnectionInformation
 {
     public Cell startCell;
     public Cell finalCell;
+    public Room targetRoom;
 
-    public CellPair(Cell sCell, Cell fCell)
+    public ConnectionInformation(Cell sCell, Cell fCell, Room tRoom)
     {
         startCell = sCell;
         finalCell = fCell;
+        targetRoom = tRoom;
     }
 }

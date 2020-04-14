@@ -7,40 +7,43 @@ public class Room
     public static List<Room> rooms = new List<Room>();
 
     public List<Cell> edgeCells;
-    public List<Room> connectedRooms;
+    public HashSet<Room> connectedRooms;
 
     public Room()
     {
         edgeCells = new List<Cell>();
-        connectedRooms = new List<Room>();
+        connectedRooms = new HashSet<Room>();
+        connectedRooms.Add(this);
     }
 
-    public CellPair FindNearestUnconnected()
+    public ConnectionInformation FindNearestUnconnected()
     {
         float minDistance = float.MaxValue;
         Cell minCell = null;
         Cell startCell = null;
+        Room targetRoom = null;
 
-        foreach (Room tarRoom in rooms)
+        foreach (Room otherRoom in rooms)
         {
-            if (connectedRooms.Contains(tarRoom) || tarRoom == this)
+            if (connectedRooms.Contains(otherRoom))
                 continue;
 
             foreach (Cell curCell in edgeCells)
             {
-                foreach (Cell tarCell in tarRoom.edgeCells)
+                foreach (Cell otherCell in otherRoom.edgeCells)
                 {
-                    float distance = Mathf.Sqrt(Mathf.Pow(tarCell.x - curCell.x, 2) + Mathf.Pow(tarCell.y - curCell.y, 2));
+                    float distance = Mathf.Sqrt(Mathf.Pow(otherCell.x - curCell.x, 2) + Mathf.Pow(otherCell.y - curCell.y, 2));
                     if (distance < minDistance)
                     {
                         minDistance = distance;
-                        minCell = tarCell;
+                        minCell = otherCell;
                         startCell = curCell;
+                        targetRoom = otherRoom;
                     }
                 }
             }
         }
 
-        return new CellPair(startCell, minCell);
+        return new ConnectionInformation(startCell, minCell, targetRoom);
     }
 }

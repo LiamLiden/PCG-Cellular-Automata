@@ -69,7 +69,6 @@ public class CellularAutomataGenerator : MonoBehaviour
         }
         map = finalMap;
 
-        // Quality Check
         // Room Creation
         while (floors.Count > 0)
         {
@@ -82,19 +81,30 @@ public class CellularAutomataGenerator : MonoBehaviour
             }
         }
 
+        Room largestRoom = Room.rooms[0];
+        // Find largest room
         foreach (Room curRoom in Room.rooms)
         {
-            if (curRoom.connectedRooms.Count == 0)
+            if (curRoom.edgeCells.Count > largestRoom.edgeCells.Count)
+                largestRoom = curRoom;
+        }
+
+        // If a room is not connected to the largest room, connect nearest rooms until it is
+        // This assures connectivity to all rooms
+        foreach (Room curRoom in Room.rooms)
+        {
+            while (!curRoom.connectedRooms.Contains(largestRoom))
             {
-                CellPair cellsToConnect = curRoom.FindNearestUnconnected();
+                ConnectionInformation cellsToConnect = curRoom.FindNearestUnconnected();
 
                 List<Cell> path = AStar.Search(map, cellsToConnect.startCell, cellsToConnect.finalCell);
                 foreach (Cell cell in path)
                 {
                     cell.value = 0;
                 }
+                curRoom.connectedRooms.UnionWith(cellsToConnect.targetRoom.connectedRooms);
             }
-        }
+        }        
 
 
         // Placement of everything
