@@ -16,6 +16,10 @@ public class Room
         connectedRooms.Add(this);
     }
 
+    /// <summary>
+    /// Finds the nearest unconnected room and returns information necessary to connect it.
+    /// </summary>
+    /// <returns></returns>
     public ConnectionInformation FindNearestUnconnected()
     {
         float minDistance = float.MaxValue;

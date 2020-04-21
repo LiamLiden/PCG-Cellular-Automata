@@ -5,13 +5,13 @@ using UnityEngine;
 public class ConnectionInformation
 {
     public Cell startCell;
-    public Cell finalCell;
+    public Cell endCell;
     public Room targetRoom;
 
     public ConnectionInformation(Cell sCell, Cell fCell, Room tRoom)
     {
         startCell = sCell;
-        finalCell = fCell;
+        endCell = fCell;
         targetRoom = tRoom;
     }
 }

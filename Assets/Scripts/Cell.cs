@@ -20,6 +20,11 @@ public class Cell : IComparable<Cell>
         visited = false;
     }
 
+    /// <summary>
+    /// Orders cells by distance.
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
     public int CompareTo(Cell other)
     {
         if (distance > other.distance)
@@ -30,6 +35,10 @@ public class Cell : IComparable<Cell>
             return 0;
     }
 
+    /// <summary>
+    /// Find straight line distance to target cell from this cell.
+    /// </summary>
+    /// <param name="targetCell"></param>
     public void SetDistance(Cell targetCell)
     {
         distance = Mathf.Sqrt(Mathf.Pow(targetCell.x - x, 2) + Mathf.Pow(targetCell.y - y, 2));
