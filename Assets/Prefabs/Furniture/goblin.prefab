@@ -95,10 +95,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name: goblin
+  myValue: 2
   myNeighborhood: 2
   valueList: 01000000
   myOperation: 4
-  myValue: 2
   targetValue: 4
-  maxAmount: 5
+  maxAmount: 10
   requiredAmount: 0

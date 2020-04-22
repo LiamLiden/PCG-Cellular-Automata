@@ -35,69 +35,73 @@ public class Furniture : MonoBehaviour
 
     public static Hashtable amount = new Hashtable();
 
-    public bool CanSpawn (Cell[,] map, int x, int y)
+    public bool CanSpawn(Cell[,] map, int x, int y)
     {
-        int value = 0;
-        switch (myNeighborhood)
+        if (!amount.ContainsKey(name) || (int)amount[name] < maxAmount)
         {
-            case Neighborhood.Moores:
-                value = Cell.MooresNeighborhood(map, x, y);
-                break;
-            case Neighborhood.VonNueman:
-                value = Cell.VonNuemanNeighborhood(map, x, y);
-                break;
-            case Neighborhood.CountMoores:
-                value = Cell.CountMoores(map, x, y, valueList);
-                break;
-            case Neighborhood.CountVonNeuman:
-                value = Cell.CountVonNueman(map, x, y, valueList);
-                break;
+            int value = 0;
+            switch (myNeighborhood)
+            {
+                case Neighborhood.Moores:
+                    value = Cell.MooresNeighborhood(map, x, y);
+                    break;
+                case Neighborhood.VonNueman:
+                    value = Cell.VonNuemanNeighborhood(map, x, y);
+                    break;
+                case Neighborhood.CountMoores:
+                    value = Cell.CountMoores(map, x, y, valueList);
+                    break;
+                case Neighborhood.CountVonNeuman:
+                    value = Cell.CountVonNueman(map, x, y, valueList);
+                    break;
+            }
+
+            switch (myOperation)
+            {
+                case Operation.Equal:
+                    if (value == targetValue)
+                        return true;
+                    else
+                        return false;
+                case Operation.LessThan:
+                    if (value < targetValue)
+                        return true;
+                    else
+                        return false;
+                case Operation.LessThanOrEqual:
+                    if (value <= targetValue)
+                        return true;
+                    else
+                        return false;
+                case Operation.GreaterThan:
+                    if (value > targetValue)
+                        return true;
+                    else
+                        return false;
+                case Operation.GreaterThanOrEqual:
+                    if (value >= targetValue)
+                        return true;
+                    else
+                        return false;
+                default:
+                    return false;
+            }
         }
-        
-        switch (myOperation)
-        {
-            case Operation.Equal:
-                if (value == targetValue)
-                    return true;
-                else
-                    return false;
-            case Operation.LessThan:
-                if (value < targetValue)
-                    return true;
-                else
-                    return false;
-            case Operation.LessThanOrEqual:
-                if (value <= targetValue)
-                    return true;
-                else
-                    return false;
-            case Operation.GreaterThan:
-                if (value > targetValue)
-                    return true;
-                else
-                    return false;
-            case Operation.GreaterThanOrEqual:
-                if (value >= targetValue)
-                    return true;
-                else
-                    return false;
-            default:
-                return false;
-        }
+        else
+            return false;
     }
 
-    public void Spawn (int x, int y)
+    public void Spawn(int x, int y)
     {
-        // Check if it is valid to spawn the furniture
+        Instantiate(gameObject, new Vector2(x, y), Quaternion.identity);
+
+        // Update HashTable
         if (!amount.ContainsKey(name))
-        {
-            Instantiate(gameObject, new Vector2(x, y), Quaternion.identity);
+        { 
             amount.Add(name, 1);
         }
-        else if ((int)amount[name] < maxAmount)
+        else
         {
-            // Spawn and increment amount
-            Instantiate(gameObject, new Vector2(x, y), Quaternion.identity);
             amount[name] = (int)amount[name] + 1;
         }
     }
