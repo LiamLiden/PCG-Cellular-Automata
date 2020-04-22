@@ -16,7 +16,9 @@ public class CellularAutomataGenerator : MonoBehaviour
     public int connectionSize;
     public GameObject wall;
     public GameObject ground;
-    public GameObject player;
+    //public GameObject player;
+    //public GameObject exit;
+    public GameObject furniture;
 
     private Cell[,] map;
 
@@ -48,7 +50,7 @@ public class CellularAutomataGenerator : MonoBehaviour
             {
                 for (int y = 0; y <= map.GetUpperBound(1); y++)
                 {
-                    if (MooresNeighborhood(map, x, y) >= wallThreshold)
+                    if (Cell.MooresNeighborhood(map, x, y) >= wallThreshold)
                         newMap[x, y] = new Cell(x, y, 1);
                     else
                         newMap[x, y] = new Cell(x, y, 0);
@@ -63,7 +65,7 @@ public class CellularAutomataGenerator : MonoBehaviour
         {
             for (int y = 0; y <= map.GetUpperBound(1); y++)
             {
-                if (MooresNeighborhood(map, x, y) >= wallThreshold)
+                if (Cell.MooresNeighborhood(map, x, y) >= wallThreshold)
                     finalMap[x, y] = new Cell(x, y, 1);
                 else
                 {
@@ -141,35 +143,6 @@ public class CellularAutomataGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns 1 if map[x, y] are out of bounds of map, else returns map[x, y]
-    /// </summary>
-    /// <param name="map"></param>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <returns></returns>
-    private int SafeMapValue(Cell[,] map, int x, int y)
-    {
-        if (x < 0 || x > map.GetUpperBound(0) || y < 0 || y > map.GetUpperBound(1))
-            return 1;
-        else
-            return map[x, y].value;
-    }
-
-    /// <summary>
-    /// Returns value of map[x, y] Moores Neighborhood
-    /// </summary>
-    /// <param name="map"></param>
-    /// <param name="x"></param>
-    /// <param name="y"></param>
-    /// <returns></returns>
-    private int MooresNeighborhood(Cell[,] map, int x, int y)
-    {
-        return SafeMapValue(map, x - 1, y) + SafeMapValue(map, x - 1, y + 1) + SafeMapValue(map, x, y + 1) + SafeMapValue(map, x + 1, y + 1)
-            + SafeMapValue(map, x + 1, y) + SafeMapValue(map, x + 1, y - 1) + SafeMapValue(map, x, y - 1) + SafeMapValue(map, x - 1, y - 1)
-            + SafeMapValue(map, x, y);
-    }
-
-    /// <summary>
     /// Recursive function to create a room. Uses BFS to visit all cells in a room and adds any cells adjacent to a wall to edgeCells.
     /// </summary>
     /// <param name="start"></param>
@@ -181,7 +154,7 @@ public class CellularAutomataGenerator : MonoBehaviour
             return;
 
         start.visited = true;
-        if (MooresNeighborhood(map, start.x, start.y) > 0)
+        if (Cell.MooresNeighborhood(map, start.x, start.y) > 0)
         {
             room.edgeCells.Add(start);
         }
