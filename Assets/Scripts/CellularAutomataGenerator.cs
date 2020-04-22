@@ -18,7 +18,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     public GameObject ground;
     //public GameObject player;
     //public GameObject exit;
-    public GameObject furniture;
+    public List<GameObject> furniture;
 
     private Cell[,] map;
 
@@ -136,6 +136,28 @@ public class CellularAutomataGenerator : MonoBehaviour
                 else if (map[x, y].value == 0)
                 {
                     Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity);
+                }
+            }
+        }
+
+        // Furnishing
+        for (int i = 0; i < 600; i++)
+        {
+            int randX = Random.Range(0, width);
+            int randY = Random.Range(0, height);
+            if (map[randX, randY].value == 0 || map[randX, randY].value == 0)
+            {
+                foreach (GameObject obj in furniture)
+                {
+                    Furniture current = obj.GetComponent<Furniture>();
+                    if (current.CanSpawn(map, randX, randY))
+                    {
+                        current.Spawn(randX, randY);
+                        map[randX, randY].value = current.myValue;
+                        if (current.name == "potion")
+                            Debug.Log("X: " + randX + " Y: " + randY + " Val: " + Cell.MooresNeighborhood(map, randX, randY));
+                        break;
+                    }
                 }
             }
         }

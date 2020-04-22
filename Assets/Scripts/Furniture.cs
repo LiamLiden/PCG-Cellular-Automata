@@ -24,6 +24,7 @@ public class Furniture : MonoBehaviour
     }
 
     public string name;
+    public int myValue;
     public Neighborhood myNeighborhood;
     [Tooltip("Only used with Count neighborhoods. Counts any value included in this list.")]
     public List<int> valueList;
@@ -32,7 +33,7 @@ public class Furniture : MonoBehaviour
     public int maxAmount;
     public int requiredAmount;
 
-    public static Hashtable amount;
+    public static Hashtable amount = new Hashtable();
 
     public bool CanSpawn (Cell[,] map, int x, int y)
     {
