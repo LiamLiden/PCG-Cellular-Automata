@@ -16,6 +16,7 @@ public class CellularAutomataGenerator : MonoBehaviour
     public int connectionSize;
     public GameObject wall;
     public GameObject ground;
+    public GameObject player;
 
     private Cell[,] map;
 
