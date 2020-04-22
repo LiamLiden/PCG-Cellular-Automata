@@ -84,4 +84,71 @@ public class Cell : IComparable<Cell>
     {
         return SafeMapValue(map, x - 1, y) + SafeMapValue(map, x, y + 1) + SafeMapValue(map, x + 1, y) + SafeMapValue(map, x, y - 1) + SafeMapValue(map, x, y);
     }
+
+    /// <summary>
+    /// Returns a count of targetValue in Moores Neightborhood of map[x, y]
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="targetValue"></param>
+    /// <returns></returns>
+    public static int CountMoores(Cell[,] map, int x, int y, List<int> countedValues)
+    {
+        int count = 0;
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                int tempX = i + x;
+                int tempY = j + y;
+                if (CheckForMatch(SafeMapValue(map, tempX, tempY), countedValues))
+                    count++;
+                
+            }
+        }
+        return count;
+    }
+
+    /// <summary>
+    /// Returns a count of targetValue in Von Nueman Neightborhood of map[x, y]
+    /// </summary>
+    /// <param name="map"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="targetValue"></param>
+    /// <returns></returns>
+    public static int CountVonNueman(Cell[,] map, int x, int y, List<int> countedValues)
+    {
+        int count = 0;
+
+        if (CheckForMatch(SafeMapValue(map, x - 1, y), countedValues))
+            count++;
+        if (CheckForMatch(SafeMapValue(map, x + 1, y), countedValues))
+            count++;
+        if (CheckForMatch(SafeMapValue(map, x, y - 1), countedValues))
+            count++;
+        if (CheckForMatch(SafeMapValue(map, x, y + 1), countedValues))
+            count++;
+        if (CheckForMatch(SafeMapValue(map, x, y), countedValues))
+            count++;
+
+        return count;
+    }
+
+    /// <summary>
+    /// Returns true if value is in list
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="list"></param>
+    /// <returns></returns>
+    private static bool CheckForMatch(int value, List<int> list)
+    {
+        foreach(int current in list)
+        {
+            if (value == current)
+                return true;
+        }
+        return false;
+    }
 }

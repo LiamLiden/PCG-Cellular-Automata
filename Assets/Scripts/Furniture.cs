@@ -19,13 +19,13 @@ public class Furniture : MonoBehaviour
     {
         Moores,
         VonNueman,
-        TargetedMoores,
-        TargetedVonNueman
+        CountMoores,
+        CountVonNeuman
     }
 
     public string name;
     public Neighborhood myNeighborhood;
-    [Tooltip("Only used with Targeted neighborhoods. Counts any value included in this list.")]
+    [Tooltip("Only used with Count neighborhoods. Counts any value included in this list.")]
     public List<int> valueList;
     public Operation myOperation;
     public int targetValue;
@@ -44,6 +44,12 @@ public class Furniture : MonoBehaviour
                 break;
             case Neighborhood.VonNueman:
                 value = Cell.VonNuemanNeighborhood(map, x, y);
+                break;
+            case Neighborhood.CountMoores:
+                value = Cell.CountMoores(map, x, y, valueList);
+                break;
+            case Neighborhood.CountVonNeuman:
+                value = Cell.CountVonNueman(map, x, y, valueList);
                 break;
         }
         
