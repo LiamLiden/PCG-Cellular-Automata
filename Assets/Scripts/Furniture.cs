@@ -31,6 +31,7 @@ public class Furniture : MonoBehaviour
     public Operation myOperation;
     public int targetValue;
     public int maxAmount;
+    [Tooltip("Generation will go over furnishing iterations if required amount is not spawned.")]
     public int requiredAmount;
 
     public static Hashtable amount = new Hashtable();
@@ -105,21 +106,9 @@ public class Furniture : MonoBehaviour
             amount[name] = (int)amount[name] + 1;
         }
     }
-}
-/*
 
-[CustomEditor(typeof(Furniture))]
-public class MyScriptEditor : Editor
-{
-    void OnInspectorGUI()
+    public int GetAmount()
     {
-        var myFurniture = target as Furniture;
-
-        myFurniture.myNeighborhood = GUILayout.Toggle(myFurniture.flag, "Flag");
-
-        if (myFurniture.flag)
-            myFurniture.i = EditorGUILayout.IntSlider("I field:", myFurniture.i, 1, 100);
-
+        return (int) amount[name];
     }
 }
-*/

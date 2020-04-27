@@ -95,10 +95,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name: bandit
+  myValue: 3
   myNeighborhood: 0
   valueList: 
   myOperation: 0
-  myValue: 3
   targetValue: 0
-  maxAmount: 10
-  requiredAmount: 0
+  maxAmount: 20
+  requiredAmount: 10

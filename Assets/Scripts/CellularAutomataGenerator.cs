@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CellularAutomataGenerator : MonoBehaviour
 {
@@ -16,8 +17,9 @@ public class CellularAutomataGenerator : MonoBehaviour
     public int connectionSize;
     public GameObject wall;
     public GameObject ground;
-    //public GameObject player;
-    //public GameObject exit;
+    public int furnishingIterations;
+    [Tooltip("Used if any furniture has a required amount value. Default 50")]
+    public int maxFurnishingIterations;
     public List<GameObject> furniture;
 
     private Cell[,] map;
@@ -76,6 +78,8 @@ public class CellularAutomataGenerator : MonoBehaviour
             }
         }
         map = finalMap;
+        // Create list that will be used for furnishing
+        List<Cell> randomOrder = new List<Cell>(floors);
 
         // Room Creation
         while (floors.Count > 0)
@@ -141,24 +145,54 @@ public class CellularAutomataGenerator : MonoBehaviour
         }
 
         // Furnishing
-        for (int i = 0; i < 600; i++)
+        for (int i = 0; i < furnishingIterations; i++)
         {
-            int randX = Random.Range(0, width);
-            int randY = Random.Range(0, height);
-            if (map[randX, randY].value == 0 || map[randX, randY].value == 0)
+            Shuffle(randomOrder);
+
+            foreach (Cell curCell in randomOrder)
             {
-                foreach (GameObject obj in furniture)
+                if (map[curCell.x, curCell.y].value == 0)
                 {
-                    Furniture current = obj.GetComponent<Furniture>();
-                    if (current.CanSpawn(map, randX, randY))
+                    foreach (GameObject obj in furniture)
                     {
-                        current.Spawn(randX, randY);
-                        map[randX, randY].value = current.myValue;
-                        if (current.name == "potion")
-                            Debug.Log("X: " + randX + " Y: " + randY + " Val: " + Cell.MooresNeighborhood(map, randX, randY));
+                        Furniture curFurniture = obj.GetComponent<Furniture>();
+                        if (curFurniture.CanSpawn(map, curCell.x, curCell.y))
+                        {
+                            curFurniture.Spawn(curCell.x, curCell.y);
+                            map[curCell.x, curCell.y].value = curFurniture.myValue;
+                            break;
+                        }
+                    }
+                }
+            } 
+        }
+
+        // Assure required amounts are met
+        foreach (GameObject obj in furniture)
+        {
+            Furniture curFurniture = obj.GetComponent<Furniture>();
+            int count = 0;
+            while (curFurniture.GetAmount() < curFurniture.requiredAmount)
+            {
+                if (count > maxFurnishingIterations)
+                {
+                    Debug.LogError("Could not create level with required furniture");
+                    Debug.Break();
+                    break;
+                }
+
+                Shuffle(randomOrder);
+
+                foreach (Cell curCell in randomOrder)
+                {
+                    if (map[curCell.x, curCell.y].value == 0 && curFurniture.CanSpawn(map, curCell.x, curCell.y))
+                    {
+                        curFurniture.Spawn(curCell.x, curCell.y);
+                        map[curCell.x, curCell.y].value = curFurniture.myValue;
                         break;
                     }
                 }
+                count++;
             }
         }
     }
@@ -190,6 +224,24 @@ public class CellularAutomataGenerator : MonoBehaviour
                 if (tempX >= 0 && tempX <= map.GetUpperBound(0) && tempY >= 0 && tempY <= map.GetUpperBound(1))
                     CreateRoom(map[tempX, tempY], room);
             }
+        }
+    }
+
+
+    /// <summary>
+    /// Randomly shuffles the elements of an array of any type
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    private void Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        for (int i = 0; i < (n - 2); i++)
+        {
+            int r = Random.Range(i, n);
+            T t = list[r];
+            list[r] = list[i];
+            list[i] = t;
         }
     }
 }
