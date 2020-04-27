@@ -9,6 +9,7 @@ public class Furniture : MonoBehaviour
     public enum Operation
     {
         Equal,
+        NotEqual,
         LessThan,
         LessThanOrEqual,
         GreaterThan,
@@ -61,6 +62,11 @@ public class Furniture : MonoBehaviour
             {
                 case Operation.Equal:
                     if (value == targetValue)
+                        return true;
+                    else
+                        return false;
+                case Operation.NotEqual:
+                    if (value != targetValue)
                         return true;
                     else
                         return false;

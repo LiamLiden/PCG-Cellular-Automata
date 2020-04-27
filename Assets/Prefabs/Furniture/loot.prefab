@@ -70,7 +70,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: d443577624202284a96b2ff9c152c27d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -94,10 +94,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84aa45cb0165f454694f0241347ccae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: 
+  name: loot
+  myValue: -1
   myNeighborhood: 0
   valueList: 
   myOperation: 0
-  targetValue: 0
-  maxAmount: 0
-  requiredAmount: 0
+  targetValue: 6
+  maxAmount: 6
+  requiredAmount: 3

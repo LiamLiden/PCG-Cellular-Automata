@@ -219,7 +219,7 @@ PrefabInstance:
     - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
         type: 3}
       propertyPath: furniture.Array.size
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
         type: 3}
@@ -234,12 +234,12 @@ PrefabInstance:
     - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
         type: 3}
       propertyPath: width
-      value: 20
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
         type: 3}
       propertyPath: height
-      value: 20
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
         type: 3}
@@ -274,6 +274,24 @@ PrefabInstance:
       propertyPath: maxFurnishingIterations
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
+        type: 3}
+      propertyPath: furniture.Array.data[3]
+      value: 
+      objectReference: {fileID: 3285368337600862764, guid: d5d7e98d9af0c484eb0ddfe0e6f1a28f,
+        type: 3}
+    - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
+        type: 3}
+      propertyPath: furniture.Array.data[4]
+      value: 
+      objectReference: {fileID: 48981628045593408, guid: d7b20e1e3e44c834bb4ecf1bac83cb2c,
+        type: 3}
+    - target: {fileID: 5950069343146370986, guid: 0bacb8fc7a831d64e8a75061df61aabf,
+        type: 3}
+      propertyPath: furniture.Array.data[5]
+      value: 
+      objectReference: {fileID: 3724235755006600992, guid: 8e491cbbbd0dccb4faee9bd8792eafc6,
+        type: 3}
     - target: {fileID: 5950069343146370987, guid: 0bacb8fc7a831d64e8a75061df61aabf,
         type: 3}
       propertyPath: m_LocalPosition.x
