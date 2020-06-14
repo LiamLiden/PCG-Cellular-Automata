@@ -25,12 +25,18 @@ public class Furniture : MonoBehaviour
     }
 
     public string name;
+    [Tooltip("The value that will be placed on the map and used for calculation of neighborhoods.")]
     public int myValue;
+    [Tooltip("Neighborhood that will be used for spawning this furniture. Count neighborhoods will count all items with a value included on the value list." + 
+        " Example: Count Moores with a value list containing a single '1' will count all walls in the Moores neighborhood.")]
     public Neighborhood myNeighborhood;
     [Tooltip("Only used with Count neighborhoods. Counts any value included in this list.")]
     public List<int> valueList;
+    [Tooltip("Operation used in conditional.")]
     public Operation myOperation;
+    [Tooltip("Right side of the condition for spawning. Final Form: calculatedValue myOperation targetValue.")]
     public int targetValue;
+    [Tooltip("Max amount of this furniture that can spawn on the map.")]
     public int maxAmount;
     [Tooltip("Generation will go over furnishing iterations if required amount is not spawned.")]
     public int requiredAmount;

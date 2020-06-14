@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class CellularAutomataGenerator : MonoBehaviour
 {
+    public static CellularAutomataGenerator instance;
+
     public int width;
     public int height;
     [Tooltip("Probability of each cell being a wall during initial creation. Default 50")]
@@ -27,6 +29,12 @@ public class CellularAutomataGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Singleton
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
         // Initialize size of map
         map = new Cell[width, height];
         Queue<Cell> floors = new Queue<Cell>();
@@ -78,8 +86,7 @@ public class CellularAutomataGenerator : MonoBehaviour
             }
         }
         map = finalMap;
-        // Create list that will be used for furnishing
-        List<Cell> randomOrder = new List<Cell>(floors);
+        
 
         // Room Creation
         while (floors.Count > 0)
@@ -126,7 +133,9 @@ public class CellularAutomataGenerator : MonoBehaviour
                 }
                 curRoom.connectedRooms.UnionWith(cellsToConnect.targetRoom.connectedRooms);
             }
-        }        
+        }
+        // Create list that will be used for furnishing
+        List<Cell> randomOrder = new List<Cell>();
 
         // Placement of walls and floors
         for (int x = 0; x <= map.GetUpperBound(0); x++)
@@ -140,6 +149,8 @@ public class CellularAutomataGenerator : MonoBehaviour
                 else if (map[x, y].value == 0)
                 {
                     Instantiate(ground, new Vector3(x, y, 0), Quaternion.identity);
+                    // Add floors to list used for furnishing
+                    randomOrder.Add(map[x, y]);
                 }
             }
         }
@@ -149,8 +160,10 @@ public class CellularAutomataGenerator : MonoBehaviour
         {
             Shuffle(randomOrder);
 
+            Cell[,] newMap = (Cell[,])map.Clone();
             foreach (Cell curCell in randomOrder)
             {
+                
                 if (map[curCell.x, curCell.y].value == 0)
                 {
                     foreach (GameObject obj in furniture)
@@ -159,12 +172,13 @@ public class CellularAutomataGenerator : MonoBehaviour
                         if (curFurniture.CanSpawn(map, curCell.x, curCell.y))
                         {
                             curFurniture.Spawn(curCell.x, curCell.y);
-                            map[curCell.x, curCell.y].value = curFurniture.myValue;
+                            newMap[curCell.x, curCell.y].value = curFurniture.myValue;
                             break;
                         }
                     }
                 }
-            } 
+            }
+            map = newMap;
         }
 
         // Assure required amounts are met

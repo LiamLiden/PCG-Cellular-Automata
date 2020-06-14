@@ -54,7 +54,7 @@ public class Cell : IComparable<Cell>
     public static int SafeMapValue(Cell[,] map, int x, int y)
     {
         if (x < 0 || x > map.GetUpperBound(0) || y < 0 || y > map.GetUpperBound(1))
-            return 5;
+            return CellularAutomataGenerator.instance.wallThreshold;
         else
             return map[x, y].value;
     }
